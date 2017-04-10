@@ -58,8 +58,9 @@ public class BinarySearchAutocomplete implements Autocompletor {
 	 *         being equal. If no such index exists, return -1 instead.
 	 */
 	public static int firstIndexOf(Term[] a, Term key, Comparator<Term> comparator) {
-		if (a == null) return -1;
-		if (key == null) throw new NullPointerException();
+//		if (a == null) throw new NullPointerException();
+//		if (a.length == 0) return -1;
+//		if (key == null) throw new NullPointerException();
 		int low = -1;
 		int high = a.length - 1;
 		// use binary search to continuously cut down on number of values to check until first index is found or loop breaks
@@ -89,8 +90,9 @@ public class BinarySearchAutocomplete implements Autocompletor {
 	 *         being equal. If no such index exists, return -1 instead.
 	 */
 	public static int lastIndexOf(Term[] a, Term key, Comparator<Term> comparator) {
-		if (a == null) return -1;
-		if (key == null) throw new NullPointerException();
+//		if (a == null) throw new NullPointerException();
+//		if (a.length == 0) return -1;
+//		if (key == null) throw new NullPointerException();
 		int low = 0;
 		int high = a.length;
 		// use binary search to continuously cut down on number of values to check until last index is found or loop breaks
@@ -130,6 +132,8 @@ public class BinarySearchAutocomplete implements Autocompletor {
 		// big-Oh of topMatches is O(log n + m log m) - n elements, m matching terms
 		// prefix cannot be null
 		if (prefix == null) throw new NullPointerException();
+		// k cannot be negative
+		if (k < 0) throw new IllegalArgumentException();
 		
 		// find first and last occurrence of matches using firstIndexOf and lastIndexOf methods
 		int firstIndex = firstIndexOf(myTerms, new Term(prefix, 0), new Term.PrefixOrder(prefix.length()));
