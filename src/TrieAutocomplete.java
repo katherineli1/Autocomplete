@@ -107,6 +107,7 @@ public class TrieAutocomplete implements Autocompletor {
 	public Iterable<String> topMatches(String prefix, int k) {
 		// prefix cannot be null
 		if (prefix == null) throw new NullPointerException();
+		if (k <= 0) return new ArrayList<String>();
 		Node current = myRoot;
 		PriorityQueue<Node> pq = new PriorityQueue<Node>(k, new Node.ReverseSubtreeMaxWeightComparator());
 		ArrayList<String> arr = new ArrayList<>();
