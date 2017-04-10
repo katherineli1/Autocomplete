@@ -11,8 +11,10 @@ public class BruteAutocomplete implements Autocompletor {
 	Term[] myTerms;
 
 	public BruteAutocomplete(String[] terms, double[] weights) {
+		// 1. Both arugments are non-null
 		if (terms == null || weights == null)
 			throw new NullPointerException("One or more arguments null");
+		// 2. Length of terms and weights are equal
 		if (terms.length != weights.length)
 			throw new IllegalArgumentException("terms and weights are not the same length");
 		myTerms = new Term[terms.length];
@@ -23,6 +25,7 @@ public class BruteAutocomplete implements Autocompletor {
 			if (weights[i] < 0)
 				throw new IllegalArgumentException("Negative weight "+ weights[i]);
 		}
+		// 3. No duplicate terms
 		if (words.size() != terms.length)
 			throw new IllegalArgumentException("Duplicate input terms");
 	}
@@ -31,7 +34,7 @@ public class BruteAutocomplete implements Autocompletor {
 		if (k < 0)
 			throw new IllegalArgumentException("Illegal value of k:"+k);
 		// maintain pq of size k
-		PriorityQueue<Term> pq = new PriorityQueue<Term>(k, new Term.WeightOrder());
+		PriorityQueue<Term> pq = new PriorityQueue<Term>(k, new Term.ReverseWeightOrder());
 		for (Term t : myTerms) {
 			if (!t.getWord().startsWith(prefix))
 				continue;

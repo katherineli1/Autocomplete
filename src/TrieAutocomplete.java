@@ -1,3 +1,5 @@
+import java.util.*;
+
 /**
  * General trie/priority queue algorithm for implementing Autocompletor
  * 
@@ -9,7 +11,7 @@ public class TrieAutocomplete implements Autocompletor {
 	/**
 	 * Root of entire trie
 	 */
-	protected Node myRoot;
+	protected Node myRoot; // only can be accessed from inside TriAutocomplete
 
 	/**
 	 * Constructor method for TrieAutocomplete. Should initialize the trie
@@ -28,12 +30,21 @@ public class TrieAutocomplete implements Autocompletor {
 	public TrieAutocomplete(String[] terms, double[] weights) {
 		if (terms == null || weights == null)
 			throw new NullPointerException("One or more arguments null");
+		// 2. Length of terms and weights are equal
+		if (terms.length != weights.length)
+			throw new IllegalArgumentException("Terms and weights are not the same length");
+		HashSet<String> words = new HashSet<String>();
 		// Represent the root as a dummy/placeholder node
 		myRoot = new Node('-', null, 0);
 
 		for (int i = 0; i < terms.length; i++) {
+			if (words.contains(terms[i]))
+				throw new IllegalArgumentException("Duplicate term " + terms[i]);
+			words.add(terms[i]);
 			add(terms[i], weights[i]);
 		}
+		if (words.size() != terms.length) 
+			throw new IllegalArgumentException("Duplicate terms");
 	}
 
 	/**
@@ -54,7 +65,23 @@ public class TrieAutocomplete implements Autocompletor {
 	 *             IllegalArgumentException if weight is negative.
 	 */
 	private void add(String word, double weight) {
-		// TODO: Implement add
+		Node current = myRoot;
+		// find the node (creating new Nodes where necessary) for word
+		// set mySubtreeMaxWeight and myInfo for each current
+		for (char ch : word.toCharArray()) {
+			if (current.mySubtreeMaxWeight < weight)
+				current.mySubtreeMaxWeight = weight;
+			if (!current.children.containsKey(ch)) // if current's children map does not contain key ch
+				current.children.put(ch, new Node(ch, current, weight));
+			current = current.children.get(ch);
+			current.myInfo = "" + ch;
+		}
+		// set current to be a word
+		current.isWord = true;
+		// set current's myWord
+		current.myWord = word;
+		// set current's myWeight
+		current.myWeight = weight;
 	}
 
 	/**
@@ -78,8 +105,30 @@ public class TrieAutocomplete implements Autocompletor {
 	 *             NullPointerException if prefix is null
 	 */
 	public Iterable<String> topMatches(String prefix, int k) {
-		// TODO: Implement topKMatches
-		return null;
+		// prefix cannot be null
+		if (prefix == null) throw new NullPointerException();
+		Node current = myRoot;
+		PriorityQueue<Node> pq = new PriorityQueue<Node>(k, new Node.ReverseSubtreeMaxWeightComparator());
+		ArrayList<String> arr = new ArrayList<>();
+		
+		// navigate current to prefix node
+		for (char ch : prefix.toCharArray()) {
+			if (!current.children.containsKey(ch)) return new ArrayList<String>();
+			current = current.children.get(ch);
+		}
+		pq.add(current);
+		// while pq is not empty and top k matches haven't been found
+		// continue to search through trie for matching words and adding to String ArrayList
+		while (pq.peek() != null && arr.size() != k) {
+			current = pq.remove();
+			if (current.isWord == true)
+				arr.add(current.myWord);
+			// add every child of current to pq to continue searching through trie
+			for (Node child : current.children.values()) {
+				pq.add(child);
+			}
+		}
+		return arr;
 	}
 
 	/**
@@ -94,8 +143,23 @@ public class TrieAutocomplete implements Autocompletor {
 	 *             NullPointerException if the prefix is null
 	 */
 	public String topMatch(String prefix) {
-		// TODO: Implement topMatch
-		return null;
+		if (prefix == null) throw new NullPointerException();
+		Node current = myRoot;
+		// loop through characters in prefix to get to node corresponding to prefix
+		for (char ch : prefix.toCharArray()) {
+			if (!current.children.containsKey(ch)) return "";
+			current = current.children.get(ch);
+		}
+		// navigate down tree until mySubtreeMaxWeight is equal to myWeight
+		while (current.mySubtreeMaxWeight != current.myWeight) {
+			for (char x : current.children.keySet()) {
+				if (current.mySubtreeMaxWeight == current.children.get(x).mySubtreeMaxWeight) {
+					current = current.children.get(x);
+					break;
+				}
+			}
+		}
+		return current.myWord;
 	}
 
 	/**
@@ -103,8 +167,14 @@ public class TrieAutocomplete implements Autocompletor {
 	 * return 0.0
 	 */
 	public double weightOf(String term) {
-		// TODO complete weightOf
-		return 0.0;
+		Node current = myRoot;
+		// loop through every char in term and check if that char is in current's children
+		for (char ch : term.toCharArray()) {
+			// if char is not in current's children, return 0.0
+			if (!current.children.containsKey(ch)) return 0.0;
+			else current = current.children.get(ch);
+		}
+		return current.myWeight;
 	}
 
 	/**

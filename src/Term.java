@@ -27,9 +27,19 @@ public class Term implements Comparable<Term> {
 	 *             if weight is negative
 	 */
 	public Term(String word, double weight) {
-		// TODO: Complete Term constructor
+		if (word == null) throw new NullPointerException();
+		if (weight < 0) throw new IllegalArgumentException();
 		myWord = word;
 		myWeight = weight;
+//		try {
+//			myWord = word;
+//			myWeight = weight;
+//		} catch (NullPointerException ne) {
+//			System.err.println("NullPointerException: " + ne.getMessage());
+//		} 
+//		catch (IllegalArgumentException ie) {
+//			System.err.println("IllegalArgumentException: " + ie.getMessage());
+//		}
 	}
 
 	/**
@@ -56,8 +66,10 @@ public class Term implements Comparable<Term> {
 		 *            - Two Terms whose words are being compared
 		 */
 		public int compare(Term v, Term w) {
-			// TODO: Implement compare
-			return 0;
+			// base case: if word is shorter than length r, just compare the words
+			if (v.myWord.length() < r || w.myWord.length() < r)
+				return v.myWord.compareTo(w.myWord);
+			return (v.myWord.substring(0, r).compareTo(w.myWord.substring(0, r)));
 		}
 	}
 
@@ -69,7 +81,9 @@ public class Term implements Comparable<Term> {
 	 */
 	public static class ReverseWeightOrder implements Comparator<Term> {
 		public int compare(Term v, Term w) {
-			// TODO: Implement ReverseWeightOrder.compare
+			// order terms in descending order based on weight
+			if (v.myWeight < w.myWeight) return 1;
+			if (v.myWeight > w.myWeight) return -1;
 			return 0;
 		}
 	}
@@ -82,7 +96,9 @@ public class Term implements Comparable<Term> {
 	 */
 	public static class WeightOrder implements Comparator<Term> {
 		public int compare(Term v, Term w) {
-			// TODO: Implement WeightOrder.compare
+			// order terms in ascending order based on weight
+			if (v.myWeight < w.myWeight) return -1;
+			if (v.myWeight > w.myWeight) return 1;
 			return 0;
 		}
 	}
