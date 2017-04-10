@@ -58,8 +58,8 @@ public class BinarySearchAutocomplete implements Autocompletor {
 	 *         being equal. If no such index exists, return -1 instead.
 	 */
 	public static int firstIndexOf(Term[] a, Term key, Comparator<Term> comparator) {
-//		if (a == null) throw new NullPointerException();
-//		if (a.length == 0) return -1;
+		if (a == null) throw new NullPointerException();
+		if (a.length == 0) return -1;
 //		if (key == null) throw new NullPointerException();
 		int low = -1;
 		int high = a.length - 1;
@@ -90,8 +90,8 @@ public class BinarySearchAutocomplete implements Autocompletor {
 	 *         being equal. If no such index exists, return -1 instead.
 	 */
 	public static int lastIndexOf(Term[] a, Term key, Comparator<Term> comparator) {
-//		if (a == null) throw new NullPointerException();
-//		if (a.length == 0) return -1;
+		if (a == null) throw new NullPointerException();
+		if (a.length == 0) return -1;
 //		if (key == null) throw new NullPointerException();
 		int low = 0;
 		int high = a.length;
