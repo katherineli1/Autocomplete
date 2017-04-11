@@ -60,7 +60,6 @@ public class BinarySearchAutocomplete implements Autocompletor {
 	public static int firstIndexOf(Term[] a, Term key, Comparator<Term> comparator) {
 		if (a == null) throw new NullPointerException();
 		if (a.length == 0) return -1;
-//		if (key == null) throw new NullPointerException();
 		int low = -1;
 		int high = a.length - 1;
 		// use binary search to continuously cut down on number of values to check until first index is found or loop breaks
@@ -92,7 +91,6 @@ public class BinarySearchAutocomplete implements Autocompletor {
 	public static int lastIndexOf(Term[] a, Term key, Comparator<Term> comparator) {
 		if (a == null) throw new NullPointerException();
 		if (a.length == 0) return -1;
-//		if (key == null) throw new NullPointerException();
 		int low = 0;
 		int high = a.length;
 		// use binary search to continuously cut down on number of values to check until last index is found or loop breaks

@@ -1,9 +1,9 @@
-Name: firstname lastname
-NetID: abc123
-Hours Spent: Give an exact (decimal) number here
-Consulted With: provide names or NetIDs of any students, TAs, or professors you consulted with on the assignment. If you did not consult with anyone, you must explicitly write NONE.
-Resources Used: Any books, papers, or online resources. If you did not use any outside resources, you must explicitly write NONE 
-Impressions: Your answer here
+Name: Katherine Li
+NetID: kl261
+Hours Spent: 10
+Consulted With: Peyton Schafer (pas44)
+Resources Used: NONE
+Impressions: This assignment was interesting and fun to work through.
 ----------------------------------------------------------------------
 Problem 1: What is the order of growth (big-Oh) of the number of compares
 (in the worst case) that each of the operations in the Autocomplete data
@@ -11,20 +11,172 @@ type make, as a function of the number of terms N, the number of matching
 terms M, and k, the number of matches returned by topKMatches for
 BinarySearchAutocomplete?
 
+firstIndexOf: log n
+lastIndexOf: log n
+topMatches: O(log n + m * log k)
+topMatch: O(log n + m)
+weightOf: log n
+
+
 Problem 2: How does the runtime of topKMatches() vary with k, assuming a fixed prefix
-and set of terms? 
+and set of terms?
+
+All three autocompletors run on terms from "words-333333.txt" with k varying for prefixes of "k", 
+"kh", and "khombu".
+
 2A BruteAutocomplete:
+For BruteAutocomplete, the runtime of topKMatches is O(n + m * log k). As k varies, runtime of 
+topKMatches() does not vary that much although it does vary because conceptually the code needs to traverse
+through all of the k matches to add them to the ArrayList to return, which would make runtime depend on k.
+Changing k in the examples below does not really affect runtime potentially because the k values do not get 
+very large and with a prefix like "khombu", there might not be k terms that match the prefix. 
+
+Time for topKMatches("k", 1) -  0.004688572279
+Time for topKMatches("k", 4) -  0.003216336001
+Time for topKMatches("k", 7) -  0.002893400326
+Time for topKMatches("kh", 1) -  0.00287158776
+Time for topKMatches("kh", 4) -  0.002994969244
+Time for topKMatches("kh", 7) -  0.002851873516
+Time for topKMatches("khombu", 1) -  0.004872897052
+Time for topKMatches("khombu", 4) -  0.004160720725
+Time for topKMatches("khombu", 7) -  0.004208740722
+
 2B BinarySearchAutocomplete:
+For BinarySearchAutocomplete, the runtime of topKMatches is O(log n + m * log k). As k varies, the runtime 
+relationship is very similar to that of BruteAutocomplete because the code still traverses through k matches
+to add them to the ArrayList to return.
+
+Time for topKMatches("k", 1) -  0.002047576014
+Time for topKMatches("k", 4) -  0.001762260085
+Time for topKMatches("k", 7) -  0.00186444841
+Time for topKMatches("kh", 1) -  5.3940974E-5
+Time for topKMatches("kh", 4) -  5.0514348E-5
+Time for topKMatches("kh", 7) -  5.2926695E-5
+Time for topKMatches("khombu", 1) -  5.265513E-6
+Time for topKMatches("khombu", 4) -  3.551022E-6
+Time for topKMatches("khombu", 7) -  2.036763E-6
+
 2C TrieAutocomplete:
+For TrieAutocomplete, the runtime of topKMatches varies but only slightly with k because TrieAutocomplete
+is less dependent upon the number of matches to loop through the code although it still takes the number of 
+matches into account.
+
+Time for topKMatches("k", 1) -  1.9018951E-5
+Time for topKMatches("k", 4) -  1.7626058E-5
+Time for topKMatches("k", 7) -  3.06952E-6
+Time for topKMatches("kh", 1) -  1.6316047E-5
+Time for topKMatches("kh", 4) -  2.876497E-6
+Time for topKMatches("kh", 7) -  2.797211E-6
+Time for topKMatches("khombu", 1) -  1.026735E-5
+Time for topKMatches("khombu", 4) -  9.15525E-7
+Time for topKMatches("khombu", 7) -  9.18004E-7
+
 
 Problem 3: Look at the methods topMatch and topKMatches in BruteAutocomplete and
 BinarySearchAutocomplete and compare both their theoretical and empirical
 runtimes. Is BinarySearchAutocomplete always guaranteed to perform better
 than BruteAutocomplete? Justify your answer.
 
+BruteAutocomplete:
+The runtime of topMatch for BruteAutocomplete is theoretically O(n) and in implementation it also 
+works out that way because as the number of terms increase, so does the runtime (as the method has to 
+check more and more terms). The runtime of topKMatches for BruteAutocomplete is theoretically O(n + m * log k)
+which doesn't always match the empirical runtime because even though it depends on k matches, there could be 
+fewer than k terms that match, in which case the runtime would be less than theoretically expected. 
+
+BinarySearchAutocomplete:
+The runtime of topMatch for BinarySearchAutocomplete is O(log n + m), which matches the empirical runtime because
+BinarySearchAutocomplete will traverse through the terms in the source (total of n terms) using a binary search method
+(which matches the log n runtime) and then will go through all of the matches it finds to add it to an ArrayList to 
+return. This means it completely depends on both log n and m in implementation. The runtime of topKMatches for 
+BinarySearchAutocomplete is O(log n + m * log k), which doesn't always match the empirical runtime because even though 
+it depends on k matches, there could be fewer than k terms that match, in which case the runtime would be less than 
+theoretically expected. 
+
+BinarySearchAutocomplete is not always guaranteed to perform better than BruteAutocomplete especially when the 
+size of source is small because the runtime of BinarySearchAutocomplete is only significantly improved
+when the number of terms to traverse is exponentially large. Both topMatch and topKMatches actually prove to run 
+faster in BruteAutocomplete than in BinarySearchAutocomplete when the source is small because simply traversing
+through all of the terms takes less time than splitting the number of terms to search through in half each time.  
+
+
 Problem 4: For all three of the Autocompletor implementations, how does increasing the
 size of the source and increasing the size of the prefix argument affect
 the runtime of topMatch and topKMatches? 
 4A BruteAutocomplete:
+Increasing the size of the source significantly slows down the runtime of both topMatch and
+topKMatches because BruteAutocomplete needs to run through all of the terms in the given source.
+Increasing the size of the prefix generally marginally decreases the runtime of topMatch and 
+topKMatches because BruteAutocomplete checks every term for the prefix (unlike other Autocompletors 
+like Trie which navigate to the prefix once and then does not need to check again).
+
+"small.txt"
+Time for topMatch("f") - 5.02402E-7
+Time for topMatch("fe") - 5.20086E-7
+Time for topMatch("february 2.0") - 3.68123E-7
+
+Time for topKMatches("f", 4) -  6.65525E-7
+Time for topKMatches("fe", 4) -  8.39487E-7
+Time for topKMatches("february 2.0", 4) -  4.34271E-7
+
+"words-333333.txt"
+Time for topMatch("k") - 0.0053624410471597
+Time for topMatch("kh") - 0.005258389556256572
+Time for topMatch("khombu") - 0.006338209743979721
+
+Time for topKMatches("k", 4) -  0.003017769555
+Time for topKMatches("kh", 4) -  0.003049111672
+Time for topKMatches("khombu", 4) -  0.003745052989
+
 4B BinarySearchAutocomplete:
+Increasing the size of the source significantly slows down the runtime of both topMatch and
+topKMatches because BinarySearchAutocomplete still depends on the size of the source although it is 
+faster than BruteAutocomplete because it runs on log(n) time. Increasing the size of the prefix 
+speeds up runtime because there are fewer terms to check for whether or not they match (due to the 
+binary search method of finding matches) since it takes more specificity for a term to match.
+
+Increase size of source: 
+"small.txt"
+Time for topMatch("f") - 3.228369E-6
+Time for topMatch("fe") - 2.18436E-6
+Time for topMatch("february 2.0") - 2.203349E-6
+
+Time for topKMatches("f", 4) -  1.992134E-6
+Time for topKMatches("fe", 4) -  1.991581E-6
+Time for topKMatches("february 2.0", 4) -  1.264896E-6
+
+"words-333333.txt"
+Time for topMatch("k") - 1.21896598E-4
+Time for topMatch("kh") - 4.574661E-6
+Time for topMatch("khombu") - 1.0648655E-5
+
+Time for topKMatches("k", 4) -  0.001739409615
+Time for topKMatches("kh", 4) -  2.3768927E-5
+Time for topKMatches("khombu", 4) -  2.449138E-6
+
 4C TrieAutocomplete:
+Increasing the size of the source does not really affect runtime of either topMatch or
+topKMatches because these methods work off of an already initialized trie rather than going through
+every term of the source to create and check the trie nodes. Thus it is not dependent on source size. 
+Increasing the size of the prefix decreases the runtime of both methods because with a longer prefix,
+there are fewer children nodes possible to check (since you are farther down the trie) and thus the code
+will not take as long to either find k terms or reach the end of the nodes available to check. 
+
+"small.txt"
+Time for topMatch("f") - 1.954855E-6
+Time for topMatch("fe") - 1.979698E-6
+Time for topMatch("february 2.0") - 1.098455E-6
+
+Time for topKMatches("f", 4) -  9.111347E-6
+Time for topKMatches("fe", 4) -  3.542317E-6
+Time for topKMatches("february 2.0", 4) -  1.702077E-6
+
+"words-333333.txt"
+Time for topMatch("k") - 4.007611E-6
+Time for topMatch("kh") - 1.325165E-6
+Time for topMatch("khombu") - 5.74472E-7
+
+Time for topKMatches("k", 4) -  5.819483E-6
+Time for topKMatches("kh", 4) -  8.970246E-6
+Time for topKMatches("khombu", 4) -  9.58497E-7
+

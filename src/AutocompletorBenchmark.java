@@ -12,7 +12,7 @@ public class AutocompletorBenchmark {
 	public static final String CHARSET = "UTF-8";
 	public static final Locale LOCALE = Locale.US;
 	public static Autocompletor getInstance(String[] words, double[] weights) {
-		return new BruteAutocomplete(words, weights);
+		return new TrieAutocomplete(words, weights);
 	}
 	// chooser allows users to select a file by navigating through
 	// directories
